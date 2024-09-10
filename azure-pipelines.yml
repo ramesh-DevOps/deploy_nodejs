@@ -20,6 +20,9 @@ jobs:
   - task: AzureCLI@2
     inputs:
       azureSubscription: $(azureSubscription)
+      scriptType: bash
+      scriptPath: $(System.DefaultWorkingDirectory)/scripts/helm-deploy.sh
+      arguments: '--acr $(azureContainerRegistry) --chart $(helmChartPath) --image $(imageName):$(imageTag)'
 
   - task: HelmInstaller@1
     inputs:
