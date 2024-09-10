@@ -1,10 +1,10 @@
 #!/bin/bash
 set -e
 
-ACR_NAME=$1
-HELM_CHART=$2
-IMAGE=$3
-NAMESPACE=$4
+ACR_NAME="testcon"
+HELM_CHART="my-node-app-chart"
+IMAGE="my-node-app"
+NAMESPACE="default"
 
 # Login to ACR
 az acr login --name $ACR_NAME
