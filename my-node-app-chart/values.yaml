@@ -1,0 +1,28 @@
+replicaCount: 2
+
+image:
+  repository: testcon.azurecr.io/my-node-app
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  name: my-node-app
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: false
+  name: ""
+  # Configure your ingress if needed
+  # hosts:
+  #   - host: chart-example.local
+  #     paths:
+  #       - /
+
+resources: {}
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
