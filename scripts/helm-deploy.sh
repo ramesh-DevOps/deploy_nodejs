@@ -19,7 +19,7 @@ az acr login --name $ACR_NAME
 
 # Add Helm repository
 echo "Adding Helm repository for ACR"
-helm repo add my-acr oci://$ACR_NAME.azurecr.io/helm
+helm repo add my-node-app-chart oci://$ACR_NAME.azurecr.io/helm
 helm repo update
 
 # Install or upgrade Helm chart
