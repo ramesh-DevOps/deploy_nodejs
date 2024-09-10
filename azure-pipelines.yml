@@ -1,0 +1,41 @@
+trigger:
+- main  # Adjust to your branch
+
+variables:
+  azureSubscription: 'Ramesh-test-aks'  # Azure service connection for AKS
+  azureContainerRegistry: 'Ramesh-acr-test'  # ACR service connection
+  aksClusterName: 'Test-aks-cluster'  # Name of your AKS cluster
+  aksResourceGroup: 'Ramesh-RG'  # Resource group of your AKS cluster
+  helmChartPath: 'my-node-app-chart'  # Path to your Helm chart
+  imageName: 'my-node-app'  # Name of your Docker image
+  imageTag: 'latest'  # Tag of your Docker image
+
+jobs:
+- job: Deploy
+  displayName: Deploy Helm Chart to AKS
+  pool:
+    vmImage: 'ubuntu-latest'
+  
+  steps:
+  - task: UseAzureCLI@2
+    inputs:
+      azureSubscription: $(azureSubscription)
+      scriptType: bash
+      scriptPath: $(System.DefaultWorkingDirectory)/scripts/helm-deploy.sh
+      arguments: '--acr $(azureContainerRegistry) --chart $(helmChartPath) --image $(imageName):$(imageTag)'
+
+  - task: HelmInstaller@1
+    inputs:
+      helmVersionToInstall: 'latest'
+
+  - script: |
+      # Login to ACR
+      az acr login --name $(azureContainerRegistry)
+
+      # Add Helm repository
+      helm repo add my-acr https://$(azureContainerRegistry).azurecr.io/helm/v1/repo
+      helm repo update
+
+      # Deploy Helm chart to AKS
+      helm upgrade --install my-release ./$(helmChartPath) --namespace default --set image.repository=$(azureContainerRegistry)/$(imageName) --set image.tag=$(imageTag)
+    displayName: 'Deploy Helm Chart'
